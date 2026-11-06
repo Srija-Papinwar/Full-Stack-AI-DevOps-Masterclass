@@ -37,6 +37,7 @@ jobs:
                 distribution: corretto
                 java-version: 21
              - name: build jar for docker
+               working-directory: docker/app1-hello/springboot/hello-spring
                run: mvn clean install
              - name: login to dockerhub
                uses: docker/login-action@v4.8.0
