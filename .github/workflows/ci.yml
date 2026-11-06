@@ -1,7 +1,17 @@
 name: continous integration
 
 on:
-   workflow_dispatch
+   workflow_dispatch:
+    inputs:
+      username:
+         description: 'Enter your dockerhub username'
+         required: true
+      password:
+         description: 'Enter your dockerhub password'
+         required: true
+      version:
+         description: 'Enter your docker image version'
+         required: true
 
 jobs:
   build_test:
@@ -40,11 +50,17 @@ jobs:
                working-directory: docker/app1-hello/springboot/hello-spring
                run: mvn clean install
              - name: login to dockerhub
+               env:
+                   username: ${{ inputs.username }}
+                   password: ${{ inputs.password }}
                uses: docker/login-action@v4.8.0
                with:
-                username: 95025934
-                password: Srija@1312
+                username: ${username}
+                password: ${password}
              - name: build and push docker image
                working-directory: docker/app1-hello/springboot/hello-spring
-               run: docker build -t 95025934/myapp:1.0 . && docker push 95025934/myapp:1.0
+               env:
+                   username: ${{ inputs.username }}
+                   version: ${{ inputs.version }}
+               run: docker build -t ${username}/myapp:${version} . && docker push ${username}/myapp:${version}
               
